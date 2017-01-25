@@ -4,7 +4,7 @@ using System.Text;
 using Settings_Play.ConfigurationSections;
 
 namespace Settings_Play {
-    public class EuroMemberSmsSender {
+    public class EuroMemberSmsSender : ISmsSender {
         public string UserName { get; set; }
 
         public string Password { get; set; }

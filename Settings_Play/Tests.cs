@@ -12,8 +12,7 @@ namespace Settings_Play {
             euroMemberSmsSender.SendSms("+905354095406", "Merhaba");
             Assert.NotEqual(euroMemberSmsSender.LastRunDate, default(DateTime));
             Assert.True(euroMemberSmsSender.Counter > 0);
-            Debug.WriteLine(euroMemberSmsSender.LastRunDate);
-            Debug.WriteLine(euroMemberSmsSender.Counter);
+      
         }
     }
 }

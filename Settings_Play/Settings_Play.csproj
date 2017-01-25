@@ -66,6 +66,7 @@
     <Compile Include="ConfigurationSections\RedisConnectionSection.cs" />
     <Compile Include="ConfigurationSections\RedisSettingsProvider.cs" />
     <Compile Include="EuroMemberSmsSender.cs" />
+    <Compile Include="ISmsSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests.cs" />
   </ItemGroup>
