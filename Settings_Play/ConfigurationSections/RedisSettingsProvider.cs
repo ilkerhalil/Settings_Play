@@ -10,13 +10,8 @@ namespace Settings_Play.ConfigurationSections {
         public override string Name { get; } = nameof(RedisSettingsProvider);
         private RedisClient _redisClient;
         public string Host { get; set; }
-
         public int Port { get; set; }
-
         public string Password { get; set; }
-
-
-
         void Connect() {
             if (Port == 0)
                 Port = 6379;
@@ -33,17 +28,15 @@ namespace Settings_Play.ConfigurationSections {
             foreach (SettingsProperty settingsProperty in collection) {
                 string stringValue;
                 if (hGetAll.TryGetValue(settingsProperty.Name, out stringValue)) {
-
-                }
-                else
-                {
-
-                    var defaultAttributeValue = (DefaultValueAttribute)settingsProperty.Attributes[typeof(DefaultValueAttribute)];
-                    
-                    values.Add(new SettingsPropertyValue(settingsProperty) { IsDirty = false, PropertyValue = defaultAttributeValue.Value });
+                    values.Add(new SettingsPropertyValue(settingsProperty) { IsDirty = false, SerializedValue = stringValue });
                     continue;
                 }
-                values.Add(new SettingsPropertyValue(settingsProperty) { IsDirty = false });
+                var defaultAttributeValue = (DefaultValueAttribute)settingsProperty.Attributes[typeof(DefaultValueAttribute)];
+                if (defaultAttributeValue == null) {
+                    values.Add(new SettingsPropertyValue(settingsProperty) { IsDirty = false, PropertyValue = GetDefault(settingsProperty.PropertyType) });
+                    continue;
+                }
+                values.Add(new SettingsPropertyValue(settingsProperty) { IsDirty = false, PropertyValue = defaultAttributeValue.Value });
             }
             return values;
         }
@@ -55,7 +48,6 @@ namespace Settings_Play.ConfigurationSections {
 
         }
         public override void Initialize(string name, NameValueCollection config) {
-            ApplicationName = "EuroMemberSmsSender";
             var redisConnectionSection = ConfigurationManager.GetSection("RedisSettingsProvider") as RedisConnectionSection;
             if (redisConnectionSection != null) {
                 Host = redisConnectionSection.Host;
@@ -66,6 +58,9 @@ namespace Settings_Play.ConfigurationSections {
             Connect();
         }
 
+        public object GetDefault(Type type) {
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
         public override string ApplicationName { get; set; }
 
         public void Dispose() {

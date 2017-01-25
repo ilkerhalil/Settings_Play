@@ -11,15 +11,19 @@ namespace Settings_Play {
 
         public string MsIsdn { get; set; }
 
-
         public int Counter {
             get { return EuroMemberSettings.DefaultInstance.Counter; }
             set { EuroMemberSettings.DefaultInstance.Counter = value; }
         }
 
+        public DateTime? LastRunDate {
+            get { return EuroMemberSettings.DefaultInstance.LastRunDate; }
+            set { EuroMemberSettings.DefaultInstance.LastRunDate = value; }
+        }
 
-        public EuroMemberSmsSender() {
-
+        public EuroMemberSmsSender()
+        {
+            Init();
         }
         public EuroMemberSmsSender(string userName, string password, string msIsdn) {
             UserName = userName;
@@ -28,7 +32,7 @@ namespace Settings_Play {
         }
 
         void Init() {
-            var section = ConfigurationManager.GetSection("EuroMemberSection") as EuroMemberConfigurationSection;
+            var section = ConfigurationManager.GetSection("EuroMemberSmsSender") as EuroMemberConfigurationSection;
             if (section != null) {
                 UserName = section.UserName;
                 Password = section.Password;
@@ -42,6 +46,7 @@ namespace Settings_Play {
             if (string.IsNullOrWhiteSpace(MsIsdn)) throw new ArgumentNullException(nameof(MsIsdn));
             Console.WriteLine("Sms atıldı");
             Counter = Counter + 1;
+            LastRunDate = DateTime.Now;
             EuroMemberSettings.DefaultInstance.Save();
 
         }
